@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import { addWine } from '../Database/Database'
 
 class WineItem extends React.Component {
 
@@ -26,6 +27,7 @@ class WineItem extends React.Component {
         return(
             <TouchableOpacity
                 style={styles.main_container}
+                onPress={() => addWine(wine.region, wine.vintage)}
             >
                 {this._displayType(wine)}
                 <View style={styles.content_container}>

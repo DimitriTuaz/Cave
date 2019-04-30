@@ -51,7 +51,7 @@ export default data = [
       size: "75cl",
       comments: "Excellent !"
    },
-   {
+   /*{
       id:5,
       country:"Espagne",
       region:"Rioja",
@@ -63,5 +63,5 @@ export default data = [
       cuvee:"",
       size: "75cl",
       comments: "Très tanninque..."
-   }
+   }*/
 ]
