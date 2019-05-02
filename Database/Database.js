@@ -6,15 +6,15 @@ const database_displayname = "SQLite Database for Cave";
 const database_size = 200000;
 let db;
 
-openCB = () => {
-    console.log("DB opened")
-
+createTable = () => {
     db.transaction(
         function(tx) {
             tx.executeSql(
                 'CREATE TABLE IF NOT EXISTS Wines( ' +
                 'id INTEGER PRIMARY KEY NOT NULL, ' +
+                'country VARCHAR(32),' +
                 'region VARCHAR(32),' +
+                'appelation VARCHAR(32),' +
                 'vintage INTEGER);',
                 [],
                 this.successCB,
@@ -26,6 +26,12 @@ openCB = () => {
             console.log('Creating Table Done')
         }
     )
+}
+
+openCB = () => {
+    console.log("DB opened")
+
+    this.createTable()
 }
 
 successCB = () => {
@@ -54,14 +60,16 @@ export function dropTable() {
             tx.executeSql('DROP TABLE Wines')
         }
     )
+
+    this.createTable()
 }
 
-export function addWine(region, vintage) {
+export function addWine(country, region, appelation, vintage) {
     db.transaction(
         function(tx) {
             tx.executeSql(
-                'INSERT INTO Wines(region, vintage) VALUES (?,?);',
-                [region, vintage],
+                'INSERT INTO Wines(country, region, appelation, vintage) VALUES (?,?,?,?);',
+                [country, region, appelation, vintage],
                 this.successCB,
                 this.errorCB
             )
@@ -73,22 +81,29 @@ export function addWine(region, vintage) {
     )
 }
 
-querySuccess = (tx, results) => {
-    var len = results.rows.length
-    console.log("There are ", len, "rows")
-    for (let i = 0; i < len; i++) {
-        let row = results.rows.item(i)
-        console.log(row)
-    }
-}
-
-selectDB = (tx) => {
-    tx.executeSql('SELECT * FROM Wines', [], this.querySuccess, this.errorCB)
-}
-
-export function select() {
+export function select(cb) {
     db.transaction(
-        this.selectDB,
+        function(tx) {
+            tx.executeSql(
+                'SELECT * FROM Wines',
+                [],
+                function(tx, results) {
+                    var len = results.rows.length
+                    var res = []
+                    console.log("There are ", len, "rows")
+                    for (let i = 0; i < len; i++) {
+                        res.push(results.rows.item(i))
+                    }
+                    if (cb) {
+                        cb(res)
+                    }
+                    else {
+                        console.log(res)
+                    }
+                },
+                this.errorCB
+            )
+        },
         this.errorCB,
         () => {
             console.log('Select Done')

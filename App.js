@@ -1,10 +1,10 @@
 import React from 'react';
-import WineList from './Components/WineList.js'
+import Navigation from './Navigation/Navigation'
 
 export default class App extends React.Component {
   render() {
     return (
-      <WineList/>
+      <Navigation/>
     );
   }
 }
