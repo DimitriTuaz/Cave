@@ -26,7 +26,7 @@ const WineTabNavigator = createBottomTabNavigator(
                 return (
                     <View style={styles.main_container}>
                         <Image
-                            source={require('../Images/wine_cellar.png')}
+                            source={require('../Images/ic_wineCellar.png')}
                             style={styles.icon}
                         />
                     </View>
@@ -41,7 +41,7 @@ const WineTabNavigator = createBottomTabNavigator(
                 return (
                     <View style={styles.main_container}>
                         <Image
-                            source={require('../Images/wine_add.png')}
+                            source={require('../Images/ic_wineAdd.png')}
                             style={styles.icon}
                         />
                     </View>
@@ -56,7 +56,7 @@ const WineTabNavigator = createBottomTabNavigator(
                 return (
                     <View style={styles.main_container}>
                         <Image
-                            source={require('../Images/settings.png')}
+                            source={require('../Images/ic_settings.png')}
                             style={styles.icon}
                         />
                     </View>

@@ -1,5 +1,4 @@
 export const wine_countries = [
-   '',
    'France',
    'Argentine',
    'Australie',
@@ -8,12 +7,10 @@ export const wine_countries = [
    'Italie',
    'Hongrie',
    'USA',
-   'Autre'
 ]
 
 export const wine_regions = {
    France: [
-      '',
       'Alsace',
       'Beaujolais',
       'Bordeaux',
@@ -26,21 +23,15 @@ export const wine_regions = {
       'Provence',
       'Savoie',
       'Sud-Ouest',
-      'Autre'
    ],
    Espagne: [
       'Rioja',
       'Cataluña'
    ],
-   Autre: [
-      '',
-      'Autre'
-   ],
 }
 
 export const wine_appelations = {
    Bourgogne: [
-      '',
       'Aloxe-Corton',
       'Auxey-Duresses',
       'Beaune',
@@ -83,10 +74,8 @@ export const wine_appelations = {
       'Volnay',
       'Vosne-Romanée',
       'Vougeot',
-      'Autre',
    ],
    Bordeaux: [
-      '',
       'Barsac',
       'Graves',
       'Haut-Médoc',
@@ -99,18 +88,59 @@ export const wine_appelations = {
       'Saint-Estèphe',
       'Saint-Julien',
       'Sauternes',
-      'Autre'
-   ],
-   Autre: [
-      '',
-      'Autre'
    ],
 }
 
-export const empty_or_other = [
-   '',
-   'Autre'
+let wine_vintages_array = [
 ]
+
+for (i = 2019; i >= 1900; i--) {
+   wine_vintages_array.push(i)
+}
+
+export const wine_vintages = wine_vintages_array
+
+export const wine_crus = {
+   default_list: [
+      'Grand Cru',
+      '1er Cru',
+      '2nd Cru',
+      'Village'
+   ],
+   Bordeaux: [
+      'Grand Cru',
+      '1er Cru Supérieur',
+      '1er Cru',
+      'Village',
+   ]
+}
+
+export const wine_types = [
+   'red',
+   'white',
+   'rose',
+   'white_sparkling',
+   'rose_sparkling',
+   'red_sparkling',
+   'yellow'
+]
+
+export const wine_colors = {
+   white: '#EBDFA1',
+   red: '#73061D',
+   rose: '#EB828E',
+   yellow: '#FFCF1A',
+}
+
+export const wine_color_names = {
+   red: 'Rouge',
+   white: 'Blanc',
+   rose: 'Rosé',
+   white_sparkling: 'Blanc Pétillant',
+   rose_sparkling: 'Rosé Pétillant',
+   red_sparkling: 'Rouge Pétillant',
+   yellow: 'Vin Jaune',
+}
 
 export const test_data = [
    {
