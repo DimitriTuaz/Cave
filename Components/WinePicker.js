@@ -14,22 +14,16 @@ import Modal from 'react-native-modal'
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 
 class WinePicker extends React.Component {
-    state = {
-        modalVisible: false,
-        selectedItem: ''
-    };
+    constructor(props) {
+        super(props)
+        this.selectedItem = ''
+        this.state = {
+            modalVisible: false,
+        }
+    }
 
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
-    }
-
-    _buttonText() {
-        if (this.state.selectedItem != '') {
-            return this.state.selectedItem
-        }
-        else {
-            return ''
-        }
     }
 
     _displayTextInput(hideTextInput) {
@@ -43,7 +37,7 @@ class WinePicker extends React.Component {
                     placeholderTextColor='#828282'
                     multiline={true}
                     style={styles.item_text}
-                    onChangeText={(text) => this.setState({selectedItem: text})}
+                    onChangeText={(text) => this.selectedItem = text}
                     onSubmitEditing={() => this.setModalVisible(!this.state.modalVisible)}
                 />
             </View>
@@ -51,7 +45,7 @@ class WinePicker extends React.Component {
     }
 
     render() {
-        const { category, items, selectItem, hideTextInput, dependsOn } = this.props
+        const { category, items, selectedItem, selectItem, hideTextInput, dependsOn } = this.props
 
         let list_items = items
         if (dependsOn != undefined) {
@@ -69,10 +63,10 @@ class WinePicker extends React.Component {
                     backdropOpacity={0.90}
                     avoidKeyboard={false}
                     onModalHide={() => {
-                        selectItem(this.state.selectedItem)
+                        selectItem(this.selectedItem)
                     }}
                     onBackButtonPress={() => {
-                        selectItem(this.state.selectedItem)
+                        selectItem(this.selectedItem)
                         this.setModalVisible(!this.state.modalVisible)
                     }}
                 >
@@ -89,7 +83,7 @@ class WinePicker extends React.Component {
                                 renderItem={({item}) =>
                                     <TouchableOpacity
                                         onPress={() => {
-                                            this.setState({selectedItem: item})
+                                            this.selectedItem = item
                                             this.setModalVisible(!this.state.modalVisible)
                                         }}
                                     >
@@ -119,7 +113,7 @@ class WinePicker extends React.Component {
                     <View style={styles.button_container}>
                         <View style={styles.button_text_container}>
                             <Text style={styles.button_text}>
-                                {this._buttonText()}
+                                {selectedItem}
                             </Text>
                         </View>
                         <View style={styles.button_icon_container}>

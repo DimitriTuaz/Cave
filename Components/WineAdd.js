@@ -2,35 +2,45 @@ import React from 'react'
 import { Alert, StyleSheet, View, ScrollView, Text, Button, FlatList } from 'react-native'
 import WinePicker from '../Components/WinePicker'
 import WineTypePicker from '../Components/WineTypePicker'
-import { addWine } from '../Database/Database'
+import { addWineToDB } from '../Database/Database'
 import {
     wine_countries,
     wine_regions,
     wine_appelations,
     wine_vintages,
     wine_crus,
-    wine_types
+    wine_types,
+    wine_size,
+    wine_comments,
+    wine_quantity
 } from '../Helpers/WineData'
+
+const initialState = {
+    country: 'France',
+    region: '',
+    appelation: '',
+    vintage: undefined,
+    cru: '',
+    producer: '',
+    type: 'red',
+    cuvee: '',
+    size: '75cl',
+    quantity: 1,
+    comments: '',
+}
 
 class WineAdd extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = {
-            country: 'France',
-            region: '',
-            appelation: '',
-            vintage: undefined,
-            cru: '',
-            producer: '',
-            type: 'red',
-            size: '',
-            cuvee: '',
-            comments: '',
-        }
+        this.state = initialState
     }
 
-    addToCave () {
+    _refresh() {
+        this.setState(initialState)
+    }
+
+    _addToCave() {
         Alert.alert(
             'Confirmation de l\'ajout',
             'Ajouter ce vin à ma cave ?',
@@ -42,12 +52,22 @@ class WineAdd extends React.Component {
                 },
                 {
                     text: 'Ajouter',
-                    onPress: () => addWine(
-                        this.state.country,
-                        this.state.region,
-                        this.state.appelation,
-                        this.state.vintage
-                    )
+                    onPress: () => {
+                        addWineToDB(
+                            this.state.country,
+                            this.state.region,
+                            this.state.appelation,
+                            this.state.vintage,
+                            this.state.cru,
+                            this.state.producer,
+                            this.state.type,
+                            this.state.cuvee,
+                            this.state.size,
+                            this.state.quantity,
+                            this.state.comments
+                        )
+                        this._refresh()
+                    }
                 }
             ]
         )
@@ -64,7 +84,7 @@ class WineAdd extends React.Component {
                         <WinePicker
                             category='Pays'
                             items={wine_countries}
-                            initItem={this.state.country}
+                            selectedItem={this.state.country}
                             selectItem={(item) => this.setState({country: item})}
                         />
                     </View>
@@ -77,6 +97,7 @@ class WineAdd extends React.Component {
                         <WinePicker
                             category='Région'
                             items={wine_regions}
+                            selectedItem={this.state.region}
                             dependsOn={this.state.country}
                             selectItem={(item) => this.setState({region: item})}
                         />
@@ -90,6 +111,7 @@ class WineAdd extends React.Component {
                         <WinePicker
                             category='Appelation'
                             items={wine_appelations}
+                            selectedItem={this.state.appelation}
                             dependsOn={this.state.region}
                             selectItem={(item) => this.setState({appelation: item})}
                         />
@@ -103,6 +125,7 @@ class WineAdd extends React.Component {
                         <WinePicker
                             category='Millésime'
                             items={wine_vintages}
+                            selectedItem={this.state.vintage}
                             selectItem={(item) => this.setState({vintage: item})}
                             hideTextInput={true}
                         />
@@ -116,6 +139,7 @@ class WineAdd extends React.Component {
                         <WinePicker
                             category='Cru'
                             items={wine_crus}
+                            selectedItem={this.state.cru}
                             dependsOn={this.state.region}
                             selectItem={(item) => this.setState({cru: item})}
                         />
@@ -128,6 +152,7 @@ class WineAdd extends React.Component {
                     <View style={styles.picker_container}>
                         <WinePicker
                             category='Domaine/Producteur'
+                            selectedItem={this.state.producer}
                             selectItem={(item) => this.setState({producer: item})}
                         />
                     </View>
@@ -154,10 +179,70 @@ class WineAdd extends React.Component {
                     </View>
                 </View>
 
+                <View style={styles.line_container}>
+                    <View style={styles.text_container}>
+                        <Text style={styles.text}>Cuvée</Text>
+                    </View>
+                    <View style={styles.picker_container}>
+                        <WinePicker
+                            category='Cuvée'
+                            selectedItem={this.state.cuvee}
+                            selectItem={(item) => this.setState({cuvee: item})}
+                        />
+                    </View>
+                </View>
+
+                <View style={styles.line_container}>
+                    <View style={styles.text_container}>
+                        <Text style={styles.text}>Taille de bouteille</Text>
+                    </View>
+                    <View style={styles.picker_container}>
+                        <WinePicker
+                            category='Taille de bouteille'
+                            items={wine_size}
+                            selectedItem={this.state.size}
+                            selectItem={(item) => this.setState({size: item})}
+                        />
+                    </View>
+                </View>
+
+                <View style={styles.line_container}>
+                    <View style={styles.text_container}>
+                        <Text style={styles.text}>Nombre de bouteilles</Text>
+                    </View>
+                    <View style={styles.picker_container}>
+                        <WinePicker
+                            category='Nombre de bouteilles'
+                            items={wine_quantity}
+                            selectedItem={this.state.quantity}
+                            selectItem={(item) => this.setState({quantity: item})}
+                        />
+                    </View>
+                </View>
+
+                <View style={styles.line_container}>
+                    <View style={styles.text_container}>
+                        <Text style={styles.text}>Commentaires</Text>
+                    </View>
+                    <View style={styles.picker_container}>
+                        <WinePicker
+                            category='Commentaires'
+                            items={wine_comments}
+                            selectedItem={this.state.comments}
+                            selectItem={(item) => this.setState({comments: item})}
+                        />
+                    </View>
+                </View>
+
                 <Button
                     title='Ajouter à ma cave'
                     color='#73061D'
-                    onPress={() => this.addToCave()}
+                    onPress={() => this._addToCave()}
+                />
+                <Button
+                    title='Refresh'
+                    color='#73061D'
+                    onPress={() => this._refresh()}
                 />
 
             </ScrollView>

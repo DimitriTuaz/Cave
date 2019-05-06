@@ -91,14 +91,19 @@ export const wine_appelations = {
    ],
 }
 
-let wine_vintages_array = [
-]
-
+let wine_vintages_array = []
 for (i = 2019; i >= 1900; i--) {
    wine_vintages_array.push(i)
 }
 
 export const wine_vintages = wine_vintages_array
+
+let wine_quantity_array = []
+for (i = 1; i < 24; i++) {
+   wine_quantity_array.push(i)
+}
+
+export const wine_quantity = wine_quantity_array
 
 export const wine_crus = {
    default_list: [
@@ -141,6 +146,22 @@ export const wine_color_names = {
    red_sparkling: 'Rouge Pétillant',
    yellow: 'Vin Jaune',
 }
+
+export const wine_size = [
+   '37,5cl',
+   '75cl',
+   '1.5L',
+   '3L',
+   '6L',
+]
+
+export const wine_comments = [
+   'Excellent !',
+   'Bon',
+   'Médiocre...',
+   'Trop jeune',
+   'Dépassé',
+]
 
 export const test_data = [
    {

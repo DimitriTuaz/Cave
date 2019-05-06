@@ -15,7 +15,14 @@ createTable = () => {
                 'country VARCHAR(32),' +
                 'region VARCHAR(32),' +
                 'appelation VARCHAR(32),' +
-                'vintage INTEGER);',
+                'vintage INTEGER,' +
+                'cru VARCHAR(32),' +
+                'producer VARCHAR(32),' +
+                'type VARCHAR(32),' +
+                'cuvee VARCHAR(32),' +
+                'size VARCHAR(32),' +
+                'quantity INTEGER,' +
+                'comments VARCHAR);' +
                 [],
                 this.successCB,
                 this.errorCB
@@ -64,12 +71,28 @@ export function dropTable() {
     this.createTable()
 }
 
-export function addWine(country, region, appelation, vintage) {
+export function addWineToDB(
+    country,
+    region,
+    appelation,
+    vintage,
+    cru,
+    producer,
+    type,
+    cuvee,
+    size,
+    quantity,
+    comments
+) {
     db.transaction(
         function(tx) {
             tx.executeSql(
-                'INSERT INTO Wines(country, region, appelation, vintage) VALUES (?,?,?,?);',
-                [country, region, appelation, vintage],
+                'INSERT INTO Wines(' +
+                'country, region, appelation, vintage, cru, producer, '+
+                'type, cuvee, size, quantity, comments) '+
+                'VALUES (?,?,?,?,?,?,?,?,?,?,?);',
+                [country, region, appelation, vintage, cru, producer,
+                type, cuvee, size, quantity, comments],
                 this.successCB,
                 this.errorCB
             )
