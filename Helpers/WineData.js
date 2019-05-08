@@ -163,6 +163,20 @@ export const wine_comments = [
    'Dépassé',
 ]
 
+export const wine_data_translation = {
+   country: 'Pays',
+   region: 'Région',
+   appelation: 'Appelation',
+   vintage: 'Millésime',
+   cru: 'Cru',
+   producer: 'Domaine/Producteur',
+   type: 'Type',
+   cuvee: 'Cuvée',
+   size: 'Taille de bouteille',
+   quantity: 'Nombre de bouteille',
+   comments: 'Commentaires'
+}
+
 export const test_data = [
    {
       id:1,

@@ -10,13 +10,14 @@ import {
     TouchableOpacity,
     FlatList,
 } from 'react-native';
+import { connect } from 'react-redux'
 import Modal from 'react-native-modal'
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
+import { wine_data_translation } from '../Helpers/WineData'
 
 class WinePicker extends React.Component {
     constructor(props) {
         super(props)
-        this.selectedItem = ''
         this.state = {
             modalVisible: false,
         }
@@ -24,6 +25,11 @@ class WinePicker extends React.Component {
 
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
+    }
+
+    _updateItem(item) {
+        const action = { type: this.props.category.toUpperCase(), value: item }
+        this.props.dispatch(action)
     }
 
     _displayTextInput(hideTextInput) {
@@ -37,7 +43,7 @@ class WinePicker extends React.Component {
                     placeholderTextColor='#828282'
                     multiline={true}
                     style={styles.item_text}
-                    onChangeText={(text) => this.selectedItem = text}
+                    onChangeText={(text) => this._updateItem(text)}
                     onSubmitEditing={() => this.setModalVisible(!this.state.modalVisible)}
                 />
             </View>
@@ -45,12 +51,13 @@ class WinePicker extends React.Component {
     }
 
     render() {
-        const { category, items, selectedItem, selectItem, hideTextInput, dependsOn } = this.props
+        const { category, items, hideTextInput, dependsOn } = this.props
 
         let list_items = items
         if (dependsOn != undefined) {
-            if (dependsOn in items) {
-                list_items = items[dependsOn]
+
+            if (this.props[dependsOn] in items) {
+                list_items = items[this.props[dependsOn]]
             }
             else {
                 list_items = items["default_list"]
@@ -62,18 +69,14 @@ class WinePicker extends React.Component {
                     isVisible={this.state.modalVisible}
                     backdropOpacity={0.90}
                     avoidKeyboard={false}
-                    onModalHide={() => {
-                        selectItem(this.selectedItem)
-                    }}
                     onBackButtonPress={() => {
-                        selectItem(this.selectedItem)
                         this.setModalVisible(!this.state.modalVisible)
                     }}
                 >
                     <View style={styles.modal_container}>
                         <View style={styles.category_container}>
                             <Text style={styles.category_text}>
-                                {category}
+                                {wine_data_translation[category]}
                             </Text>
                         </View>
                         <HideWithKeyboard style={styles.list_container}>
@@ -83,7 +86,7 @@ class WinePicker extends React.Component {
                                 renderItem={({item}) =>
                                     <TouchableOpacity
                                         onPress={() => {
-                                            this.selectedItem = item
+                                            this._updateItem(item)
                                             this.setModalVisible(!this.state.modalVisible)
                                         }}
                                     >
@@ -113,7 +116,7 @@ class WinePicker extends React.Component {
                     <View style={styles.button_container}>
                         <View style={styles.button_text_container}>
                             <Text style={styles.button_text}>
-                                {selectedItem}
+                                {this.props[category]}
                             </Text>
                         </View>
                         <View style={styles.button_icon_container}>
@@ -200,4 +203,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default WinePicker
+const mapStateToProps = (state) => {
+    return state
+}
+
+export default connect(mapStateToProps)(WinePicker)
