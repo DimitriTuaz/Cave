@@ -88,7 +88,6 @@ class WineAdd extends React.Component {
         const options = {
             title: 'Photo de l\'étiquette',
             mediaType: 'photo',
-            customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
             storageOptions: {
                 skipBackup: true,
             },
@@ -169,7 +168,7 @@ class WineAdd extends React.Component {
                 </View>
                 {this._renderPicker('appelation', wine_appelations, 'region')}
                 {this._renderPicker('cru', wine_crus, 'region')}
-                {this._renderPicker('producer')}
+                {this._renderPicker('producer', this.props.producerList)}
                 <View style={styles.type_container}>
                     <View style={styles.type_text_container}>
                         <Text style={styles.text}>

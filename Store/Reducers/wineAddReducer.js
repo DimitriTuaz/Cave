@@ -10,6 +10,7 @@ const initialState = {
     size: '75cl',
     quantity: 1,
     comments: '',
+    producerList: {},
 }
 
 function updateWineAddItem(state = initialState, action) {
@@ -79,6 +80,13 @@ function updateWineAddItem(state = initialState, action) {
             nextState = {
                 ...state,
                 comments: action.value
+            }
+            return nextState || state
+        // Update the proposed Producer List in WineAdd screen based on the region
+        case 'PRODUCER_LIST':
+            nextState = {
+                ...state,
+                producerList: action.value
             }
             return nextState || state
         case 'ERASE':

@@ -13,6 +13,7 @@ import {
 import { connect } from 'react-redux'
 import Modal from 'react-native-modal'
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
+import { selectFromDB } from '../Database/Database'
 import { wine_data_translation } from '../Helpers/WineData'
 
 class WinePicker extends React.Component {
@@ -21,18 +22,35 @@ class WinePicker extends React.Component {
         this.state = {
             modalVisible: false,
         }
+        this._updateProducerList = this._updateProducerList.bind(this)
     }
 
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
     }
 
+    _updateProducerList(producerList) {
+        this.props.dispatch({
+            type: 'PRODUCER_LIST',
+            value: producerList
+        })
+    }
+
     _updateItem(item) {
-        if (item == 'Champagne') {
-            this.props.dispatch({ type: 'TYPE', value: 'white_sparkling' })
+        if (this.props.category == 'region') {
+            // Default type for Champagne wine is 'white_sparkling'
+            if (item == 'Champagne') {
+                this.props.dispatch({ type: 'TYPE', value: 'white_sparkling' })
+            }
+
+            // Update the Producer List if the region is updated
+            selectFromDB(this._updateProducerList, 'producer', 'region=\''+ item + '\'', true, true)
         }
-        const action = { type: this.props.category.toUpperCase(), value: item }
-        this.props.dispatch(action)
+
+        this.props.dispatch({
+            type: this.props.category.toUpperCase(),
+            value: item
+        })
     }
 
     _displayTextInput(hideTextInput) {

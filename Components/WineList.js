@@ -1,25 +1,26 @@
 import React from 'react'
 import { StyleSheet, FlatList, View, Text, Button } from 'react-native'
 import WineItem from './WineItem'
-import { openDB, dropTable, select } from '../Database/Database'
+import { openDB, selectFromDB } from '../Database/Database'
 
 class WineList extends React.Component {
 
     constructor(props) {
         super(props)
-        openDB()
         this.state = {
             wines: []
         }
-        this._test_callback = this._test_callback.bind(this)
+        this._select_callback = this._select_callback.bind(this)
+        openDB()
+        this.refreshListFromDB()
     }
 
-    _test_callback(res) {
-        this.setState({wines: res})
+    _select_callback(wine_list) {
+        this.setState({wines: wine_list})
     }
 
     refreshListFromDB() {
-        select(this._test_callback)
+        selectFromDB(this._select_callback, '*')
     }
 
     render() {
@@ -29,11 +30,6 @@ class WineList extends React.Component {
                     color='#990026'
                     title="Refresh"
                     onPress={() => this.refreshListFromDB()}
-                />
-                <Button
-                    color='#990026'
-                    title="Ajouter un vin"
-                    onPress={() => this.props.navigation.navigate("WineAdd")}
                 />
                 <FlatList
                     style={styles.list}

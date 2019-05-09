@@ -92,7 +92,7 @@ export function addWineToDB(
                 'INSERT INTO Wines(' +
                 'country, region, appelation, vintage, cru, producer, '+
                 'type, cuvee, size, quantity, comments, photo) '+
-                'VALUES (?,?,?,?,?,?,?,?,?,?,?, ?);',
+                'VALUES (?,?,?,?,?,?,?,?,?,?,?,?);',
                 [country, region, appelation, vintage, cru, producer,
                 type, cuvee, size, quantity, comments, photo],
                 this.successCB,
@@ -123,18 +123,31 @@ export function removeWineFromDB(id) {
     )
 }
 
-export function select(cb) {
+export function selectFromDB(cb, column, condition, distinct, sort) {
     db.transaction(
         function(tx) {
             tx.executeSql(
-                'SELECT * FROM Wines',
+                'SELECT ' +
+                (distinct ? 'DISTINCT ' : '') +
+                column + ' FROM Wines '+
+                (condition ? 'WHERE ' + condition : '') +
+                (sort ? 'ORDER BY ' + column : '') + ';',
                 [],
                 function(tx, results) {
                     var len = results.rows.length
                     var res = []
                     console.log("There are ", len, "rows")
-                    for (let i = 0; i < len; i++) {
-                        res.push(results.rows.item(i))
+                    if (column == '*') {
+                        for (let i = 0; i < len; i++) {
+                            res.push(results.rows.item(i))
+                        }
+                    }
+                    else {
+                        // If we need just a column result, don't return
+                        // the key for each item
+                        for (let i = 0; i < len; i++) {
+                            res.push(results.rows.item(i)[column])
+                        }
                     }
                     if (cb) {
                         cb(res)
