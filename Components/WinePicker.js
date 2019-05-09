@@ -44,7 +44,7 @@ class WinePicker extends React.Component {
                 <TextInput
                     placeholder='Autre...'
                     placeholderTextColor='#828282'
-                    multiline={true}
+                    multiline={false}
                     style={styles.item_text}
                     onChangeText={(text) => this._updateItem(text)}
                     onSubmitEditing={() => this.setModalVisible(!this.state.modalVisible)}

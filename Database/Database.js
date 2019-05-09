@@ -106,6 +106,23 @@ export function addWineToDB(
     )
 }
 
+export function removeWineFromDB(id) {
+    db.transaction(
+        function(tx) {
+            tx.executeSql(
+                'DELETE FROM Wines WHERE id=? ;',
+                [id],
+                this.successCB,
+                this.errorCB
+            )
+        },
+        this.errorCB,
+        () => {
+            console.log('Removing Wine Done')
+        }
+    )
+}
+
 export function select(cb) {
     db.transaction(
         function(tx) {

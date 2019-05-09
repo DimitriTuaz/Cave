@@ -1,103 +1,202 @@
 import React from 'react'
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
-import { addWine } from '../Database/Database'
+import { StyleSheet, View, Alert, Text, Image, TouchableOpacity } from 'react-native'
+import { removeWineFromDB } from '../Database/Database'
+import { wine_colors } from '../Helpers/WineData.js'
 
 class WineItem extends React.Component {
 
-    _displayType(wine) {
-        var type_style
-        if (wine.type === "red") {
-            type_style=styles.type_red
+    _removeFromCave(id) {
+        Alert.alert(
+            'Confirmation de la suppresion',
+            'Enlever ce vin de ma cave ?',
+            [
+                {
+                    text: 'Annuler',
+                    onPress: () => console.log("Canceled removing wine from cave"),
+                    style: 'cancel'
+                },
+                {
+                    text: 'Enlever',
+                    onPress: () => {
+                        removeWineFromDB(id)
+                    }
+                }
+            ]
+        )
+    }
+
+    _displayPhoto(photo, type) {
+        if (photo) {
+            return(
+                <Image
+                    style={styles.photo}
+                    source={{uri: photo}}
+                />
+            )
         }
-        else if (wine.type === "white") {
-            type_style=styles.type_white
+    }
+
+    _displayCuvee(cuvee) {
+        if (cuvee) {
+            return(<Text>{cuvee}</Text>)
+        }
+    }
+
+    // Display bubbles on top of the colored square if it's a sparkling wine
+    _displayBubbles(type) {
+        if (type.includes("sparkling")) {
+            return (
+                <Image
+                    source={require('../Images/ic_bubbles.png')}
+                    style={styles.bubbles}
+                />
+            )
+        }
+        else if (type == 'other') {
+            return (
+                <Text style={styles.other_mark}>?</Text>
+            )
+        }
+    }
+
+    // Return the RGB wine color code depending on the wine type
+    _wineColor(type) {
+        if (type.includes("sparkling")){
+            return wine_colors[type.replace('_sparkling', '')]
         }
         else {
-            type_style=styles.type_sparkling_white
+            return wine_colors[type]
         }
-
-        return(
-            <View style={type_style}>
-            </View>
-        )
     }
 
     render() {
         const { wine } = this.props
         return(
-            <TouchableOpacity
-                style={styles.main_container}
-                onPress={() => addWine(wine.region, wine.vintage)}
-            >
-                {this._displayType(wine)}
-                <View style={styles.content_container}>
-                    <View style={styles.header_container}>
-                        <View style={styles.region_container}>
-                            <Text style={styles.region_text} >{wine.region}</Text>
-                            <Text style={styles.appelation_text } >{wine.appelation} {wine.cru}</Text>
-                            <Text>{wine.cuvee}</Text>
+            <View>
+                <TouchableOpacity
+                    style={styles.main_container}
+                    onLongPress={() =>this._removeFromCave(wine.id)}
+                >
+                    <View style={styles.photo_container}>
+                        {this._displayPhoto(wine.photo)}
+                    </View>
+                    <View style={styles.content_container}>
+                        <View style={styles.left_container}>
+                            <View style={styles.first_line_container}>
+                                <View style={[
+                                    styles.type_container,
+                                    {backgroundColor: this._wineColor(wine.type)}
+                                ]}>
+                                    {this._displayBubbles(wine.type)}
+                                </View>
+                                <View style={styles.appelation_container}>
+                                    <Text style={styles.appelation_text } >
+                                        {wine.appelation} {wine.cru}
+                                    </Text>
+                                </View>
+                            </View>
+                            <Text style={styles.producer_text} >{wine.producer}</Text>
+                            {this._displayCuvee(wine.cuvee)}
+                            <Text style={styles.region_text} >({wine.region})</Text>
                         </View>
-                        <View style={styles.vintage_container}>
-                            <Text style={styles.vintage_text} >{wine.vintage}</Text>
+                        <View style={styles.right_container}>
+                            <View style={styles.vintage_container}>
+                                <Text style={styles.vintage_text} >{wine.vintage}</Text>
+                            </View>
+                            <View style={styles.quantity_container}>
+                                <Text style={styles.quantity_text} >x{wine.quantity}</Text>
+                            </View>
                         </View>
                     </View>
-                    <View style={styles.comment_container}>
-                        <Text style={styles.comment_text} >{wine.comments}</Text>
-                    </View>
-                </View>
-            </TouchableOpacity>
+                </TouchableOpacity>
+                <Text style={styles.bottom_line}></Text>
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
     main_container: {
-        height: 120,
-        flexDirection: 'row'
-    },
-    content_container: {
-        flex: 4,
-        margin: 5
-    },
-    header_container: {
-        flex: 3,
-        flexDirection: 'row'
-    },
-    region_container: {
-        flex: 3,
-    },
-    vintage_container: {
         flex: 1,
-        alignItems: 'center'
+        height: 130,
+        flexDirection: 'row'
     },
-    comment_container: {
+    photo_container: {
         flex: 1
     },
-    region_text: {
+    photo: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 10,
+    },
+    content_container: {
+        flex: 3,
+        flexDirection: 'row',
+        marginLeft: 10,
+    },
+    left_container: {
+        flex: 5,
+    },
+    right_container: {
+        flex: 1,
+    },
+    first_line_container: {
+        width: '100%',
+        flexDirection: 'row',
+    },
+    type_container: {
+        height: 20,
+        width: 20,
+        marginTop: 5,
+        borderRadius: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    bubbles: {
+        width: 20,
+        height: 20,
+    },
+    appelation_container: {
+        marginLeft: 5,
+    },
+    appelation_text: {
         fontWeight: "bold",
         fontSize: 20
     },
-    appelation_text: {
-        fontSize: 16
+    region_text: {
+        fontSize: 14,
+        fontStyle: "italic",
     },
-    vintage_text: {
+    producer_text: {
         fontSize: 16
     },
     comment_text: {
         fontStyle: "italic",
         fontSize: 14
     },
-    type_red: {
+    vintage_container: {
         flex: 1,
-        backgroundColor: '#8E2800'
+        justifyContent: 'flex-start',
+        alignItems: 'flex-end',
     },
-    type_white: {
-        flex: 1,
-        backgroundColor: '#FFF0A5'
+    vintage_text: {
+        fontSize: 16,
+        marginRight: 5,
+        marginTop: 5,
     },
-    type_sparkling_white: {
+    quantity_container: {
         flex: 1,
-        backgroundColor: '#FFB03B'
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+    },
+    quantity_text: {
+        fontSize: 20,
+        marginRight: 5,
+        marginBottom: 5,
+    },
+    bottom_line: {
+        height: 1,
+        backgroundColor: '#212121'
     }
 })
 
