@@ -47,8 +47,6 @@ class WineTypePicker extends React.Component {
                 width: 150,
                 backgroundColor: '#990026',
                 borderRadius: 10,
-                //borderWidth: 2,
-                //borderColor: wine_colors['red'],
             })
         }
         else {

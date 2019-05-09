@@ -150,7 +150,7 @@ export const wine_color_names = {
    other: 'Autre',
 }
 
-export const wine_size = [
+export const wine_sizes = [
    '37,5cl',
    '75cl',
    '1.5L',

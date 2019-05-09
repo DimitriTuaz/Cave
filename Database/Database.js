@@ -22,7 +22,8 @@ createTable = () => {
                 'cuvee VARCHAR(32),' +
                 'size VARCHAR(32),' +
                 'quantity INTEGER,' +
-                'comments VARCHAR);' +
+                'comments VARCHAR,' +
+                'photo VARCHAR);',
                 [],
                 this.successCB,
                 this.errorCB
@@ -46,7 +47,7 @@ successCB = () => {
 }
 
 errorCB = (err) => {
-    console.warning("DB error: ", err)
+    console.error("DB error: ", err)
     return false
 }
 
@@ -82,17 +83,18 @@ export function addWineToDB(
     cuvee,
     size,
     quantity,
-    comments
+    comments,
+    photo
 ) {
     db.transaction(
         function(tx) {
             tx.executeSql(
                 'INSERT INTO Wines(' +
                 'country, region, appelation, vintage, cru, producer, '+
-                'type, cuvee, size, quantity, comments) '+
-                'VALUES (?,?,?,?,?,?,?,?,?,?,?);',
+                'type, cuvee, size, quantity, comments, photo) '+
+                'VALUES (?,?,?,?,?,?,?,?,?,?,?, ?);',
                 [country, region, appelation, vintage, cru, producer,
-                type, cuvee, size, quantity, comments],
+                type, cuvee, size, quantity, comments, photo],
                 this.successCB,
                 this.errorCB
             )

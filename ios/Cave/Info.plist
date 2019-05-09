@@ -43,6 +43,14 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSAppTransportSecurity</key>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) voudrait accéder à votre galerie photo</string>
+	<key>NSCameraUsageDescription</key>
+	<string>$(PRODUCT_NAME) voudrait utiliser votre caméra</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>$(PRODUCT_NAME) voudrait enregistrer des photos dans votre galerie photo</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>$(PRODUCT_NAME) voudrait accéder à votre micro (pour les vidéos)</string>
 	<!--See http://ste.vn/2015/06/10/configuring-app-transport-security-ios-9-osx-10-11/ -->
 	<dict>
     <key>NSAllowsArbitraryLoads</key>

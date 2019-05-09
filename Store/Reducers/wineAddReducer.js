@@ -81,6 +81,8 @@ function updateWineAddItem(state = initialState, action) {
                 comments: action.value
             }
             return nextState || state
+        case 'ERASE':
+            return initialState
         default:
             return state
     }

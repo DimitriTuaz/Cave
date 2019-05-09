@@ -5,10 +5,13 @@ import {
     View,
     ScrollView,
     Text,
+    TouchableOpacity,
+    Image,
     Button,
     FlatList
 } from 'react-native'
 import { connect } from 'react-redux'
+import ImagePicker from 'react-native-image-picker'
 import WinePicker from '../Components/WinePicker'
 import WineTypePicker from '../Components/WineTypePicker'
 import { addWineToDB } from '../Database/Database'
@@ -19,13 +22,25 @@ import {
     wine_vintages,
     wine_crus,
     wine_types,
-    wine_size,
+    wine_sizes,
     wine_comments,
     wine_quantity,
     wine_data_translation
 } from '../Helpers/WineData'
 
+const photoIcon = require('../Images/ic_wineBottle.png')
+
 class WineAdd extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            photo: photoIcon,
+            customPhoto: false,
+        }
+
+        this._photoClicked = this._photoClicked.bind(this)
+    }
 
     _addToCave() {
         Alert.alert(
@@ -51,99 +66,110 @@ class WineAdd extends React.Component {
                             this.props.cuvee,
                             this.props.size,
                             this.props.quantity,
-                            this.props.comments
+                            this.props.comments,
+                            this.state.customPhoto ? this.state.photo.uri : undefined
                         )
+                        this._erase()
                     }
                 }
             ]
         )
     }
 
+    _erase() {
+        this.props.dispatch({ type: 'ERASE'})
+        this.setState({
+            photo: photoIcon,
+            customPhoto: false
+        })
+    }
+
+    _photoClicked() {
+        const options = {
+            title: 'Photo de l\'étiquette',
+            mediaType: 'photo',
+            customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+            storageOptions: {
+                skipBackup: true,
+            },
+        };
+
+        ImagePicker.launchCamera(options, (response) => {
+            if (response.didCancel) {
+                console.log('Taking photo canceled')
+            }
+            else if (response.error) {
+                console.log('Taking photo error: ', response.error)
+            }
+            else {
+                this.setState({
+                    photo: { uri: response.uri},
+                    customPhoto: true
+                })
+            }
+        })
+
+    }
+
+    _renderPicker(category, items, dependsOn, hideTextInput) {
+        return(
+            <View style={styles.line_container}>
+                <View style={styles.text_container}>
+                    <Text style={styles.text}>
+                        {wine_data_translation[category]}
+                    </Text>
+                </View>
+                <View style={styles.picker_container}>
+                    <WinePicker
+                        category={category}
+                        items={items}
+                        dependsOn={dependsOn}
+                        hideTextInput={hideTextInput}
+                    />
+                </View>
+            </View>
+        )
+    }
+
+    _photoSize() {
+        if (this.state.customPhoto) {
+            return ({
+                width: '100%',
+                height: '100%',
+                borderRadius: 10,
+            })
+        }
+        else {
+            return ({
+                width: 60,
+                height: 140,
+            })
+        }
+    }
+
     render() {
         return (
             <ScrollView style={styles.main_container}>
-                <View style={styles.line_container}>
-                    <View style={styles.text_container}>
-                        <Text style={styles.text}>
-                            {wine_data_translation['country']}
-                        </Text>
+                <View style={styles.upper_container}>
+                    <View style={styles.upper_left_container}>
+                        <TouchableOpacity onPress={() => this._photoClicked()}>
+                            <View style={styles.photo_container}>
+                                <Image
+                                    style={this._photoSize()}
+                                    source={this.state.photo}
+                                />
+                            </View>
+                        </TouchableOpacity>
                     </View>
-                    <View style={styles.picker_container}>
-                        <WinePicker
-                            category='country'
-                            items={wine_countries}
-                        />
-                    </View>
-                </View>
-                <View style={styles.line_container}>
-                    <View style={styles.text_container}>
-                        <Text style={styles.text}>
-                            {wine_data_translation['region']}
-                        </Text>
-                    </View>
-                    <View style={styles.picker_container}>
-                        <WinePicker
-                            category='region'
-                            items={wine_regions}
-                            dependsOn='country'
-                        />
+                    <View style={styles.upper_right_container}>
+                        {this._renderPicker('country', wine_countries)}
+                        {this._renderPicker('vintage', wine_vintages, undefined, true)}
+                        {this._renderPicker('region', wine_regions, 'country')}
                     </View>
                 </View>
-                <View style={styles.line_container}>
-                    <View style={styles.text_container}>
-                        <Text style={styles.text}>
-                            {wine_data_translation['appelation']}
-                        </Text>
-                    </View>
-                    <View style={styles.picker_container}>
-                        <WinePicker
-                            category='appelation'
-                            items={wine_appelations}
-                            dependsOn='region'
-                        />
-                    </View>
-                </View>
-                <View style={styles.line_container}>
-                    <View style={styles.text_container}>
-                        <Text style={styles.text}>
-                            {wine_data_translation['vintage']}
-                        </Text>
-                    </View>
-                    <View style={styles.picker_container}>
-                        <WinePicker
-                            category='vintage'
-                            items={wine_vintages}
-                            hideTextInput={true}
-                        />
-                    </View>
-                </View>
-                <View style={styles.line_container}>
-                    <View style={styles.text_container}>
-                        <Text style={styles.text}>
-                            {wine_data_translation['cru']}
-                        </Text>
-                    </View>
-                    <View style={styles.picker_container}>
-                        <WinePicker
-                            category='cru'
-                            items={wine_crus}
-                            dependsOn='region'
-                        />
-                    </View>
-                </View>
-                <View style={styles.line_container}>
-                    <View style={styles.text_container}>
-                        <Text style={styles.text}>
-                            {wine_data_translation['producer']}
-                        </Text>
-                    </View>
-                    <View style={styles.picker_container}>
-                        <WinePicker
-                            category='producer'
-                        />
-                    </View>
-                </View>
-
+                {this._renderPicker('appelation', wine_appelations, 'region')}
+                {this._renderPicker('cru', wine_crus, 'region')}
+                {this._renderPicker('producer')}
                 <View style={styles.type_container}>
                     <View style={styles.type_text_container}>
                         <Text style={styles.text}>
@@ -163,66 +189,20 @@ class WineAdd extends React.Component {
                         />
                     </View>
                 </View>
-
-                <View style={styles.line_container}>
-                    <View style={styles.text_container}>
-                        <Text style={styles.text}>
-                            {wine_data_translation['cuvee']}
-                        </Text>
-                    </View>
-                    <View style={styles.picker_container}>
-                        <WinePicker
-                            category='cuvee'
-                        />
-                    </View>
-                </View>
-
-                <View style={styles.line_container}>
-                    <View style={styles.text_container}>
-                        <Text style={styles.text}>
-                            {wine_data_translation['size']}
-                        </Text>
-                    </View>
-                    <View style={styles.picker_container}>
-                        <WinePicker
-                            category='size'
-                            items={wine_size}
-                        />
-                    </View>
-                </View>
-
-                <View style={styles.line_container}>
-                    <View style={styles.text_container}>
-                        <Text style={styles.text}>
-                            {wine_data_translation['quantity']}
-                        </Text>
-                    </View>
-                    <View style={styles.picker_container}>
-                        <WinePicker
-                            category='quantity'
-                            items={wine_quantity}
-                        />
-                    </View>
-                </View>
-
-                <View style={styles.line_container}>
-                    <View style={styles.text_container}>
-                        <Text style={styles.text}>
-                            {wine_data_translation['comments']}
-                        </Text>
-                    </View>
-                    <View style={styles.picker_container}>
-                        <WinePicker
-                            category='comments'
-                            items={wine_comments}
-                        />
-                    </View>
-                </View>
+                {this._renderPicker('cuvee')}
+                {this._renderPicker('size', wine_sizes)}
+                {this._renderPicker('quantity', wine_quantity)}
+                {this._renderPicker('comments', wine_comments)}
 
                 <Button
                     title='Ajouter à ma cave'
                     color='#73061D'
                     onPress={() => this._addToCave()}
+                />
+                <Button
+                    title='Effacer'
+                    color='#73061D'
+                    onPress={() => this._erase()}
                 />
 
             </ScrollView>
@@ -233,6 +213,31 @@ class WineAdd extends React.Component {
 const styles = StyleSheet.create({
     main_container: {
         flex: 1,
+    },
+    upper_container: {
+        height: 195,
+        flexDirection: 'row'
+    },
+    upper_left_container: {
+        flex: 3,
+        justifyContent: 'flex-end',
+    },
+    upper_right_container: {
+        flex: 5,
+    },
+    photo_container: {
+        height: 165,
+        backgroundColor: '#990026',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        marginLeft: 5,
+        marginRight: 5,
+        marginBottom: 10,
+    },
+    photo: {
+        width: 60,
+        height: 140,
     },
     line_container: {
         height: 65,
