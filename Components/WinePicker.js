@@ -28,6 +28,9 @@ class WinePicker extends React.Component {
     }
 
     _updateItem(item) {
+        if (item == 'Champagne') {
+            this.props.dispatch({ type: 'TYPE', value: 'white_sparkling' })
+        }
         const action = { type: this.props.category.toUpperCase(), value: item }
         this.props.dispatch(action)
     }

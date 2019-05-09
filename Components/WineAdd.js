@@ -27,13 +27,6 @@ import {
 
 class WineAdd extends React.Component {
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            type: 'red'
-        }
-    }
-
     _addToCave() {
         Alert.alert(
             'Confirmation de l\'ajout',
@@ -54,7 +47,7 @@ class WineAdd extends React.Component {
                             this.props.vintage,
                             this.props.cru,
                             this.props.producer,
-                            this.state.type,
+                            this.props.type,
                             this.props.cuvee,
                             this.props.size,
                             this.props.quantity,
@@ -160,15 +153,11 @@ class WineAdd extends React.Component {
                     <View style={styles.type_list_container}>
                         <FlatList
                             data={wine_types}
-                            extraData={this.state.type}
                             keyExtractor={(item) => item}
                             horizontal={true}
                             renderItem={({item}) =>
                                 <WineTypePicker
-                                    type={item}
-                                    // TO CHANGE ! Not using state anymore
-                                    selectType={(item) => this.setState({type: item})}
-                                    selected={(item == this.state.type) ? true : false}
+                                    currentType={item}
                                 />
                             }
                         />
@@ -261,7 +250,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     type_container: {
-        height: 120,
+        height: 130,
         marginRight: 10,
     },
     type_text_container: {
@@ -270,6 +259,7 @@ const styles = StyleSheet.create({
     },
     type_list_container: {
         flex: 4,
+        marginLeft: 10,
     },
 })
 

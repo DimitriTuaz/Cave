@@ -127,7 +127,8 @@ export const wine_types = [
    'white_sparkling',
    'rose_sparkling',
    'red_sparkling',
-   'yellow'
+   'yellow',
+   'other',
 ]
 
 export const wine_colors = {
@@ -135,6 +136,7 @@ export const wine_colors = {
    red: '#73061D',
    rose: '#EB828E',
    yellow: '#FFCF1A',
+   other: '#DDDDDD',
 }
 
 export const wine_color_names = {
@@ -145,6 +147,7 @@ export const wine_color_names = {
    rose_sparkling: 'Rosé Pétillant',
    red_sparkling: 'Rouge Pétillant',
    yellow: 'Vin Jaune',
+   other: 'Autre',
 }
 
 export const wine_size = [
